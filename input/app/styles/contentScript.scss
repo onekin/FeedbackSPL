@@ -1,6 +1,10 @@
 @import '../../node_modules/jquery-contextmenu/src/sass/jquery.contextMenu';
 @import '../../node_modules/components-jqueryui/themes/base/jquery-ui';
 
+#context-menu-layer {
+  z-index: 2147483646 !important;
+}
+
 @import './groupSelection';
 @import './tagWrapper';
 @import './sidebar';

@@ -18,9 +18,6 @@ const Config = require('../../Config')
 const FileSaver = require('file-saver')
 
 const Events = require('../../contentScript/Events')
-const DefaultCriteria = require('./DefaultCriteria')
-
-
 let swal = require('sweetalert2')
 
 class ReviewGenerator {
@@ -70,7 +67,7 @@ class ReviewGenerator {
       this.configurationImage = this.container.querySelector('#configurationButton')
       this.configurationImage.src = configurationImageURL
       this.configurationImage.addEventListener('click', () => {
-
+        this.configurationButtonHandler()
       })
       if (_.isFunction(callback)) {
         callback()
@@ -156,6 +153,36 @@ class ReviewGenerator {
               this.importReviewAnnotations()
             } else if (key === 'export') {
               this.exportReviewAnnotations()
+            }
+          },
+          items: items
+        }
+      }
+    })
+  }
+
+  configurationButtonHandler () {
+    // Create context menu
+    $.contextMenu({
+      selector: '#configurationButton',
+      trigger: 'left',
+      build: () => {
+        // Create items for context menu
+        let items = {}
+        items['manual'] = {name: 'User manual'}
+        items['questionnaire'] = {name: 'Feedback'}
+        items['recentActivity'] = {name: 'Recent activity'}
+        items['config'] = {name: 'Configuration'}
+        return {
+          callback: (key, opt) => {
+            if (key === 'manual') {
+              window.open("https://github.com/haritzmedina/reviewAndGo/wiki/Review&Go-FAQ","_blank")
+            } else if (key === 'questionnaire') {
+              window.open("https://forms.gle/5u8wsh2xUW8KcdtC9","_blank")
+            } else if (key === 'recentActivity') {
+              window.open(chrome.extension.getURL('/pages/specific/review/recentActivity.html'),"_blank")
+            } else if (key === 'config') {
+              window.open(chrome.extension.getURL('/pages/options.html'),"_blank")
             }
           },
           items: items
