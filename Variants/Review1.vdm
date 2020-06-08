@@ -46,5 +46,29 @@
         </cm:property>
       </cm:properties>
     </cm:element>
+    <cm:element cm:id="iYCR3TE86PKtmQHVS" cm:type="ps:selected" cm:class="ps:selection">
+      <cm:relations cm:id="iXbmBUFEm7M7lGydH" cm:class="ps:references">
+        <cm:relation cm:id="ilH6bNkMGKfiSGMMw" cm:type="ps:references">
+          <cm:target cm:id="iJo81k_nkFLspNtF2">iHhyYzCNAO4elPAEb/iaBLhzbBezPQYEQKW</cm:target>
+        </cm:relation>
+      </cm:relations>
+      <cm:properties>
+        <cm:property cm:id="ieQvyy-pu7N_62bXx" cm:type="ps:string" cm:invisible="true" cm:fixed="true" cm:name="ps:selector">
+          <cm:constant cm:id="iz2AXTIlG548pvPno" cm:type="ps:string">ps:user</cm:constant>
+        </cm:property>
+        <cm:property cm:id="iO6X8sNwq62k_3Cf1" cm:type="ps:string" cm:fixed="true" cm:readonly="true" cm:name="ps:Source">
+          <cm:constant cm:id="iKJYV5GCVc0OPJg6q" cm:type="ps:string">haritz</cm:constant>
+        </cm:property>
+        <cm:property cm:id="iLQ2tWj0xA2hRMylr" cm:type="ps:datetime" cm:fixed="true" cm:readonly="true" cm:name="ps:Created">
+          <cm:constant cm:id="iKwSa2hSloNXghN4f" cm:type="ps:datetime">2020-06-08T17:28:18.019Z</cm:constant>
+        </cm:property>
+        <cm:property cm:id="iuj8yZxTOLSd59duh" cm:type="ps:string" cm:fixed="true" cm:readonly="true" cm:name="ps:ChangedBy">
+          <cm:constant cm:id="iYvFaY-CHqXfkxbKy" cm:type="ps:string">haritz</cm:constant>
+        </cm:property>
+        <cm:property cm:id="iPy9bwOabFQVMwEmU" cm:type="ps:datetime" cm:fixed="true" cm:readonly="true" cm:name="ps:Changed">
+          <cm:constant cm:id="ibrgvcgXvf4-7GxNh" cm:type="ps:datetime">2020-06-08T17:28:18.019Z</cm:constant>
+        </cm:property>
+      </cm:properties>
+    </cm:element>
   </cm:elements>
 </cm:consulmodel>

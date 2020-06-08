@@ -435,6 +435,7 @@ class TextAnnotator extends ContentAnnotator {
           $(highlightedElement).css('background-color', color)
           // Set purpose color
           highlightedElement.dataset.color = color
+          // PVSCL:IFCOND(Gradations, LINE)
           let group = null
           if (LanguageUtils.isInstanceOf(tagInstance, TagGroup)) {
             group = tagInstance
@@ -444,6 +445,7 @@ class TextAnnotator extends ContentAnnotator {
             group = tagInstance.group
             highlightedElement.title = group.config.name + '\nLevel: ' + tagInstance.name
           }
+          // PVSCL:ENDCOND
           if (!_.isEmpty(annotation.text)) {
             try {
               let feedback = JSON.parse(annotation.text)
@@ -609,6 +611,7 @@ class TextAnnotator extends ContentAnnotator {
 
       let groupTag = window.abwa.tagManager.getGroupFromAnnotation(annotation)
       let criterionName = groupTag.config.name
+      // PVSCL:IFCOND(Gradations, LINE)
       let poles = groupTag.tags.map((e) => { return e.name })
       // let poleChoiceRadio = poles.length>0 ? '<h3>Pole</h3>' : ''
       let poleChoiceRadio = '<div>'
@@ -630,9 +633,9 @@ class TextAnnotator extends ContentAnnotator {
         poleChoiceRadio += ' <span class="swal2-label" style="margin-right:5%;" title="\'+e+\'">' + e + '</span>'
       })
       poleChoiceRadio += '</div>'
-
+      // PVSCL:ENDCOND
       swal({
-        html: '<h3 class="criterionName">' + criterionName + '</h3>' + poleChoiceRadio + '<textarea id="swal-textarea" class="swal2-textarea" placeholder="Type your feedback here...">' + form.comment + '</textarea>'/* PVSCL:IFCOND(ReferenceFinder) */ + '<input placeholder="Suggest literature from DBLP" id="swal-input1" class="swal2-input"><ul id="literatureList">' + suggestedLiteratureHtml(form.suggestedLiterature) + '</ul>' /* PVSCL:ENDCOND */,
+        html: '<h3 class="criterionName">' + criterionName + '</h3>' /* PVSCL:IFCOND(Gradations) */ + poleChoiceRadio /* PVSCL:ENDCOND */ + '<textarea id="swal-textarea" class="swal2-textarea" placeholder="Type your feedback here...">' + form.comment + '</textarea>'/* PVSCL:IFCOND(ReferenceFinder) */ + '<input placeholder="Suggest literature from DBLP" id="swal-input1" class="swal2-input"><ul id="literatureList">' + suggestedLiteratureHtml(form.suggestedLiterature) + '</ul>' /* PVSCL:ENDCOND */,
         showLoaderOnConfirm: true,
         width: '40em',
         preConfirm: () => {
@@ -656,19 +659,34 @@ class TextAnnotator extends ContentAnnotator {
                   reverseButtons: true
                 }).then((result) => {
                   if (result.value) {
-                    updateAnnotation({comment: newComment/* PVSCL:IFCOND(ReferenceFinder) */, literature: suggestedLiterature/* PVSCL:ENDCOND */, level: level})
+                    updateAnnotation({
+                      comment: newComment/* PVSCL:IFCOND(ReferenceFinder) */,
+                      literature: suggestedLiterature/* PVSCL:ENDCOND *//* PVSCL:IFCOND(Gradations) */,
+                      level: level/* PVSCL:ENDCOND */
+                    })
                   } else if (result.dismiss === swal.DismissReason.cancel) {
-                    showAlert({comment: newComment/* PVSCL:IFCOND(ReferenceFinder) */, literature: suggestedLiterature/* PVSCL:ENDCOND */})
+                    showAlert({
+                      comment: newComment/* PVSCL:IFCOND(ReferenceFinder) */,
+                      literature: suggestedLiterature/* PVSCL:ENDCOND */
+                    })
                   }
                 })
               } else {
                 // Update annotation
-                updateAnnotation({comment: newComment/* PVSCL:IFCOND(ReferenceFinder) */, literature: suggestedLiterature/* PVSCL:ENDCOND */, level: level})
+                updateAnnotation({
+                  comment: newComment/* PVSCL:IFCOND(ReferenceFinder) */,
+                  literature: suggestedLiterature/* PVSCL:ENDCOND *//* PVSCL:IFCOND(Gradations) */,
+                  level: level /* PVSCL:ENDCOND */
+                })
               }
             })
           } else {
             // Update annotation
-            updateAnnotation({comment: ''/* PVSCL:IFCOND(ReferenceFinder) */, literature: suggestedLiterature/* PVSCL:ENDCOND */, level: level})
+            updateAnnotation({
+              comment: ''/* PVSCL:IFCOND(ReferenceFinder) */,
+              literature: suggestedLiterature/* PVSCL:ENDCOND *//* PVSCL:IFCOND(Gradations) */,
+              level: level /* PVSCL:ENDCOND */
+            })
           }
         },
         onOpen: () => {
