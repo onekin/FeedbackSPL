@@ -10,6 +10,8 @@ const Events = require('./Events')
 const TagManager = require('./TagManager')
 const HypothesisClientManager = require('../storage/hypothesis/HypothesisClientManager')
 
+const LocalStorageManager = require('../storage/local/LocalStorageManager')
+
 class GroupSelector {
   constructor () {
     this.selectedGroupNamespace = 'groupManipulation.currentGroup'
@@ -48,8 +50,24 @@ class GroupSelector {
     // Load all the groups belonged to current user
     this.retrieveGroups((err, groups) => {
       if (err) {
-
+        callback(err)
       } else {
+        // If initialization annotation exist, load the corresponding group
+        let initAnnotation = window.abwa.annotationBasedInitializer.initAnnotation
+        if (_.isObject(initAnnotation) && _.has(initAnnotation, 'group')) {
+          let group = _.find(window.abwa.groupSelector.groups, (group) => { return group.id === initAnnotation.group })
+          if (_.isObject(group)) {
+            this.currentGroup = group
+            // Save current group in GoogleStorage
+            ChromeStorage.setData(this.selectedGroupNamespace, {data: JSON.stringify(this.currentGroup)}, ChromeStorage.local)
+            if (_.isFunction(callback)) {
+              callback()
+            }
+            // Group is loaded, don't need to continue
+            return
+          }
+        }
+        // If not found, try the following: get last used group, load default group or create a new default group
         ChromeStorage.getData(this.selectedGroupNamespace, ChromeStorage.local, (err, savedCurrentGroup) => {
           if (!err && !_.isEmpty(savedCurrentGroup) && _.has(savedCurrentGroup, 'data')) {
             // Parse saved current group
@@ -68,9 +86,15 @@ class GroupSelector {
           }
           // If group cannot be retrieved from saved in extension storage
           // Try to load a group with name DefaultReviewModel
-          this.currentGroup = _.find(window.abwa.groupSelector.groups, (group) => { return group.name === 'DefaultReviewModel' })
+          if (_.isEmpty(this.currentGroup)) {
+            this.currentGroup = _.find(window.abwa.groupSelector.groups, (group) => { return group.name === 'DefaultReviewModel' })
+          }
+          // If local annotation storage is selected, open any other group as all of them are for review&go
+          if (_.isEmpty(this.currentGroup) && LanguageUtils.isInstanceOf(window.abwa.storageManager, LocalStorageManager)) {
+            this.currentGroup = _.first(window.abwa.groupSelector.groups)
+          }
           // If group does not exist, create a new one
-          if (!this.currentGroup) {
+          if (_.isEmpty(this.currentGroup)) {
             window.abwa.storageManager.client.createNewGroup({
               name: 'DefaultReviewModel',
               description: 'A Review&Go group to conduct a review'
@@ -230,9 +254,12 @@ class GroupSelector {
         if (err) {
           Alerts.errorAlert({text: 'Unable to rename group. Error: ' + err.message})
         } else {
-          this.reloadGroupsContainer(() => {
-            this.container.setAttribute('aria-expanded', 'true')
-            window.abwa.sidebar.openSidebar()
+          this.currentGroup = renamedGroup
+          this.retrieveGroups(() => {
+            this.reloadGroupsContainer(() => {
+              this.container.setAttribute('aria-expanded', 'true')
+              window.abwa.sidebar.openSidebar()
+            })
           })
         }
       })
@@ -255,9 +282,15 @@ class GroupSelector {
         if (err) {
           Alerts.errorAlert({text: 'Error when deleting the group: ' + err.message})
         } else {
+          // If removed group is the current group, current group must defined again
+          if (group.id === this.currentGroup.id) {
+            this.currentGroup = null
+          }
           // Move to first other group if exists
           this.defineCurrentGroup(() => {
             this.reloadGroupsContainer(() => {
+              // Dispatch group has changed
+              this.updateCurrentGroupHandler()
               // Expand groups container
               this.container.setAttribute('aria-expanded', 'false')
               // Reopen sidebar if closed
@@ -396,7 +429,7 @@ class GroupSelector {
     })
   }
 
-  updateCurrentGroupHandler (groupId) {
+  updateCurrentGroupHandler (groupId = this.currentGroup.id) {
     let currentGroup = _.find(this.groups, (group) => { return groupId === group.id })
     if (_.isObject(currentGroup)) {
       this.currentGroup = currentGroup
@@ -517,7 +550,7 @@ class GroupSelector {
           groupName = LanguageUtils.normalizeString(groupName)
           window.abwa.storageManager.client.updateGroup(group.id, {
             name: groupName,
-            description: 'A Review&Go group to conduct a review'
+            description: group.description || 'A Review&Go group to conduct a review'
           }, callback)
         }
       }

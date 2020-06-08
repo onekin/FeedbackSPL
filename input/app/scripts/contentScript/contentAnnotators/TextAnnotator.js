@@ -142,13 +142,12 @@ class TextAnnotator extends ContentAnnotator {
 
   createAnnotationEventHandler () {
     return (event) => {
-      let selectors = []
       // If selection is empty, return null
       if (document.getSelection().toString().length === 0) {
         // If tag element is not checked, no navigation allowed
         if (event.detail.chosen === 'true') {
           // Navigate to the first annotation for this tag
-          this.goToFirstAnnotationOfTag(event.detail.tags[0])
+          this.goToNextAnnotationOfTag(event.detail.tags[0])
         } else {
           Alerts.infoAlert({text: chrome.i18n.getMessage('CurrentSelectionEmpty')})
         }
@@ -160,40 +159,7 @@ class TextAnnotator extends ContentAnnotator {
         return
       }
       let range = document.getSelection().getRangeAt(0)
-      // Create FragmentSelector
-      if (_.findIndex(window.abwa.contentTypeManager.documentType.selectors, (elem) => { return elem === 'FragmentSelector' }) !== -1) {
-        let fragmentSelector = null
-        if (window.abwa.contentTypeManager.documentType === ContentTypeManager.documentTypes.pdf) {
-          fragmentSelector = PDFTextUtils.getFragmentSelector(range)
-        } else {
-          fragmentSelector = DOMTextUtils.getFragmentSelector(range)
-        }
-        if (fragmentSelector) {
-          selectors.push(fragmentSelector)
-        }
-      }
-      // Create RangeSelector
-      if (_.findIndex(window.abwa.contentTypeManager.documentType.selectors, (elem) => { return elem === 'RangeSelector' }) !== -1) {
-        let rangeSelector = DOMTextUtils.getRangeSelector(range)
-        if (rangeSelector) {
-          selectors.push(rangeSelector)
-        }
-      }
-      // Create TextPositionSelector
-      if (_.findIndex(window.abwa.contentTypeManager.documentType.selectors, (elem) => { return elem === 'TextPositionSelector' }) !== -1) {
-        let rootElement = window.abwa.contentTypeManager.getDocumentRootElement()
-        let textPositionSelector = DOMTextUtils.getTextPositionSelector(range, rootElement)
-        if (textPositionSelector) {
-          selectors.push(textPositionSelector)
-        }
-      }
-      // Create TextQuoteSelector
-      if (_.findIndex(window.abwa.contentTypeManager.documentType.selectors, (elem) => { return elem === 'TextQuoteSelector' }) !== -1) {
-        let textQuoteSelector = DOMTextUtils.getTextQuoteSelector(range)
-        if (textQuoteSelector) {
-          selectors.push(textQuoteSelector)
-        }
-      }
+      let selectors = TextAnnotator.getSelectors(range)
       // Construct the annotation to send to storage
       let annotation = TextAnnotator.constructAnnotation(selectors, event.detail.tags)
       window.abwa.storageManager.client.createNewAnnotation(annotation, (err, annotation) => {
@@ -212,6 +178,45 @@ class TextAnnotator extends ContentAnnotator {
         }
       })
     }
+  }
+
+  static getSelectors (range) {
+    let selectors = []
+    // Create FragmentSelector
+    if (_.findIndex(window.abwa.contentTypeManager.documentType.selectors, (elem) => { return elem === 'FragmentSelector' }) !== -1) {
+      let fragmentSelector = null
+      if (window.abwa.contentTypeManager.documentType === ContentTypeManager.documentTypes.pdf) {
+        fragmentSelector = PDFTextUtils.getFragmentSelector(range)
+      } else {
+        fragmentSelector = DOMTextUtils.getFragmentSelector(range)
+      }
+      if (fragmentSelector) {
+        selectors.push(fragmentSelector)
+      }
+    }
+    // Create RangeSelector
+    if (_.findIndex(window.abwa.contentTypeManager.documentType.selectors, (elem) => { return elem === 'RangeSelector' }) !== -1) {
+      let rangeSelector = DOMTextUtils.getRangeSelector(range)
+      if (rangeSelector) {
+        selectors.push(rangeSelector)
+      }
+    }
+    // Create TextPositionSelector
+    if (_.findIndex(window.abwa.contentTypeManager.documentType.selectors, (elem) => { return elem === 'TextPositionSelector' }) !== -1) {
+      let rootElement = window.abwa.contentTypeManager.getDocumentRootElement()
+      let textPositionSelector = DOMTextUtils.getTextPositionSelector(range, rootElement)
+      if (textPositionSelector) {
+        selectors.push(textPositionSelector)
+      }
+    }
+    // Create TextQuoteSelector
+    if (_.findIndex(window.abwa.contentTypeManager.documentType.selectors, (elem) => { return elem === 'TextQuoteSelector' }) !== -1) {
+      let textQuoteSelector = DOMTextUtils.getTextQuoteSelector(range)
+      if (textQuoteSelector) {
+        selectors.push(textQuoteSelector)
+      }
+    }
+    return selectors
   }
 
   static constructAnnotation (selectors, tags) {
@@ -546,7 +551,7 @@ class TextAnnotator extends ContentAnnotator {
     // Open sweetalert
     let that = this
 
-    let updateAnnotation = (comment, literature, level) => {
+    let updateAnnotation = ({comment, literature, level}) => {
       annotation.text = JSON.stringify({comment: comment, suggestedLiterature: literature})
 
       // Assign level to annotation
@@ -587,6 +592,7 @@ class TextAnnotator extends ContentAnnotator {
       }
     }
     let showAlert = (form) => {
+      // PVSCL:IFCOND(ReferenceFinder, LINE)
       let suggestedLiteratureHtml = (lit) => {
         let html = ''
         for (let i in lit) {
@@ -596,6 +602,7 @@ class TextAnnotator extends ContentAnnotator {
         }
         return html
       }
+      // PVSCL:ENDCOND
       let hasLevel = (annotation, level) => {
         return annotation.tags.find((e) => { return e === Config.review.namespace + ':' + Config.review.tags.grouped.subgroup + ':' + level }) != null
       }
@@ -625,12 +632,14 @@ class TextAnnotator extends ContentAnnotator {
       poleChoiceRadio += '</div>'
 
       swal({
-        html: '<h3 class="criterionName">' + criterionName + '</h3>' + poleChoiceRadio + '<textarea id="swal-textarea" class="swal2-textarea" placeholder="Type your feedback here...">' + form.comment + '</textarea>' + '<input placeholder="Suggest literature from DBLP" id="swal-input1" class="swal2-input"><ul id="literatureList">' + suggestedLiteratureHtml(form.suggestedLiterature) + '</ul>',
+        html: '<h3 class="criterionName">' + criterionName + '</h3>' + poleChoiceRadio + '<textarea id="swal-textarea" class="swal2-textarea" placeholder="Type your feedback here...">' + form.comment + '</textarea>'/* PVSCL:IFCOND(ReferenceFinder) */ + '<input placeholder="Suggest literature from DBLP" id="swal-input1" class="swal2-input"><ul id="literatureList">' + suggestedLiteratureHtml(form.suggestedLiterature) + '</ul>' /* PVSCL:ENDCOND */,
         showLoaderOnConfirm: true,
         width: '40em',
         preConfirm: () => {
           let newComment = $('#swal-textarea').val()
+          // PVSCL:IFCOND(ReferenceFinder, LINE)
           let suggestedLiterature = Array.from($('#literatureList li span')).map((e) => { return $(e).attr('title') })
+          // PVSCL:ENDCOND
           let level = $('.poleRadio:checked') != null && $('.poleRadio:checked').length === 1 ? $('.poleRadio:checked')[0].value : null
           if (newComment !== null && newComment !== '') {
             $.ajax('http://text-processing.com/api/sentiment/', {
@@ -647,19 +656,19 @@ class TextAnnotator extends ContentAnnotator {
                   reverseButtons: true
                 }).then((result) => {
                   if (result.value) {
-                    updateAnnotation(newComment, suggestedLiterature, level)
+                    updateAnnotation({comment: newComment/* PVSCL:IFCOND(ReferenceFinder) */, literature: suggestedLiterature/* PVSCL:ENDCOND */, level: level})
                   } else if (result.dismiss === swal.DismissReason.cancel) {
-                    showAlert({comment: newComment, suggestedLiterature: suggestedLiterature})
+                    showAlert({comment: newComment/* PVSCL:IFCOND(ReferenceFinder) */, literature: suggestedLiterature/* PVSCL:ENDCOND */})
                   }
                 })
               } else {
                 // Update annotation
-                updateAnnotation(newComment, suggestedLiterature, level)
+                updateAnnotation({comment: newComment/* PVSCL:IFCOND(ReferenceFinder) */, literature: suggestedLiterature/* PVSCL:ENDCOND */, level: level})
               }
             })
           } else {
             // Update annotation
-            updateAnnotation('', suggestedLiterature, level)
+            updateAnnotation({comment: ''/* PVSCL:IFCOND(ReferenceFinder) */, literature: suggestedLiterature/* PVSCL:ENDCOND */, level: level})
           }
         },
         onOpen: () => {
@@ -672,7 +681,7 @@ class TextAnnotator extends ContentAnnotator {
       $('.poleRadio + img').on('click', function () {
         $(this).prev('.poleRadio').prop('checked', true)
       })
-
+      // PVSCL:IFCOND(ReferenceFinder, LINE)
       $('#swal-input1').autocomplete({
         source: function (request, response) {
           $.ajax({
@@ -719,6 +728,7 @@ class TextAnnotator extends ContentAnnotator {
           $('.ui-autocomplete').css('max-width', $('#swal2-content').width())
         }
       })
+      // PVSCL:ENDCOND
     }
     if (annotation.text === null || annotation.text === '') {
       showAlert({comment: '', suggestedLiterature: []})
@@ -753,6 +763,19 @@ class TextAnnotator extends ContentAnnotator {
     }
   }
 
+  goToNextAnnotationOfTag (tag) {
+    // Get all the annotations with that tag
+    let annotations = window.abwa.contentAnnotator.allAnnotations.filter(annotation => annotation.tags.includes(tag))
+    let index = _.indexOf(annotations, this.lastAnnotation)
+    if (index === -1 || index === annotations.length - 1) {
+      this.lastAnnotation = annotations[0]
+    } else {
+      this.lastAnnotation = annotations[index + 1]
+    }
+    window.abwa.contentAnnotator.goToAnnotation(this.lastAnnotation)
+    window.abwa.sidebar.openSidebar()
+  }
+
   goToFirstAnnotationOfTag (tag) {
     // TODO Retrieve first annotation for tag
     let annotation = _.find(this.allAnnotations, (annotation) => {
@@ -774,16 +797,12 @@ class TextAnnotator extends ContentAnnotator {
           // Check if annotation was found by 'find' command, otherwise go to page
           if (window.PDFViewerApplication.page !== fragmentSelector.page) {
             window.PDFViewerApplication.page = fragmentSelector.page
+            this.redrawAnnotations()
           }
         }
         window.PDFViewerApplication.findController.executeCommand('find', {query: queryTextSelector.exact, phraseSearch: true})
         // Timeout to remove highlight used by PDF.js
-        setTimeout(() => {
-          let pdfjsHighlights = document.querySelectorAll('.highlight')
-          for (let i = 0; pdfjsHighlights.length; i++) {
-            pdfjsHighlights[i].classList.remove('highlight')
-          }
-        }, 1000)
+        this.removeFindTagsInPDFs()
       }
     } else { // Else, try to find the annotation by data-annotation-id element attribute
       let firstElementToScroll = document.querySelector('[data-annotation-id="' + annotation.id + '"]')
@@ -840,7 +859,8 @@ class TextAnnotator extends ContentAnnotator {
         }
       } else { // Else, try to find the annotation by data-annotation-id element attribute
         let firstElementToScroll = document.querySelector('[data-annotation-id="' + initAnnotation.id + '"]')
-        if (!_.isElement(firstElementToScroll) && !_.isNumber(this.initializationTimeout)) {
+        // If go to annotation is done by init annotation and it is not found, wait for some seconds for ajax content to be loaded and try again to go to annotation
+        if (!_.isElement(firstElementToScroll) && !_.isNumber(this.initializationTimeout)) { // It is done only once, if timeout does not exist previously (otherwise it won't finish never calling goToAnnotation
           this.initializationTimeout = setTimeout(() => {
             console.debug('Trying to scroll to init annotation in 2 seconds')
             this.initAnnotatorByAnnotation()
@@ -932,6 +952,24 @@ class TextAnnotator extends ContentAnnotator {
       LanguageUtils.dispatchCustomEvent(Events.updatedAllAnnotations, {annotations: this.allAnnotations})
       this.redrawAnnotations()
     })
+  }
+
+  removeFindTagsInPDFs () {
+    setTimeout(() => {
+      // Remove class for middle selected elements in find function of PDF.js
+      document.querySelectorAll('.highlight.selected.middle').forEach(elem => {
+        $(elem).removeClass('highlight selected middle')
+      })
+      // Remove wrap for begin and end selected elements in find function of PDF.js
+      document.querySelectorAll('.highlight.selected').forEach(elem => {
+        if (elem.children.length === 1) {
+          $(elem.children[0]).unwrap()
+        } else {
+          $(document.createTextNode(elem.innerText)).insertAfter(elem)
+          $(elem).remove()
+        }
+      })
+    }, 1000)
   }
 }
 

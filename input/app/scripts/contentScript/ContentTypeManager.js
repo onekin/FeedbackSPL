@@ -2,7 +2,6 @@ const _ = require('lodash')
 const Events = require('./Events')
 const URLUtils = require('../utils/URLUtils')
 const LanguageUtils = require('../utils/LanguageUtils')
-const Alerts = require('../utils/Alerts')
 const axios = require('axios')
 
 const URL_CHANGE_INTERVAL_IN_SECONDS = 1
@@ -19,7 +18,7 @@ class ContentTypeManager {
   }
 
   init (callback) {
-    if (document.querySelector('embed[type="application/pdf"][name="plugin"]')) {
+    if (document.querySelector('embed[type="application/pdf"]')) {
       window.location = chrome.extension.getURL('content/pdfjs/web/viewer.html') + '?file=' + encodeURIComponent(window.location.href)
     } else {
       // Load publication metadata
@@ -46,7 +45,7 @@ class ContentTypeManager {
             // Is a local file
             if (window.PDFViewerApplication.url.startsWith('file:///')) {
               this.localFile = true
-              this.localFilePath = window.PDFViewerApplication.url
+              this.localFilePath = URLUtils.retrieveMainUrl(window.PDFViewerApplication.url)
               if (_.isFunction(callback)) {
                 callback()
               }
@@ -69,24 +68,10 @@ class ContentTypeManager {
         } else {
           if (window.location.href.startsWith('file:///')) {
             this.localFile = true
-            this.localFilePath = window.location.href
-            // Check in moodle download manager if the file exists
-            chrome.runtime.sendMessage({scope: 'annotationFile', cmd: 'fileMetadata', data: {filepath: URLUtils.retrieveMainUrl(window.location.href)}}, (fileMetadata) => {
-              if (_.isEmpty(fileMetadata)) {
-                // Warn user document is not from moodle
-                Alerts.warningAlert({
-                  text: 'Try to download the file again from moodle and if the error continues check <a href="https://github.com/haritzmedina/MarkAndGo/wiki/Most-common-errors-in-Mark&Go#file-is-not-from-moodle">this</a>.',
-                  title: 'This file is not downloaded from moodle'})
-                this.documentURL = URLUtils.retrieveMainUrl(window.location.href)
-              } else {
-                this.fileMetadata = fileMetadata.file
-                this.documentURL = fileMetadata.file.url
-                this.getContextAndItemIdInLocalFile()
-              }
-              if (_.isFunction(callback)) {
-                callback()
-              }
-            })
+            this.localFilePath = URLUtils.retrieveMainUrl(window.location.href)
+            if (_.isFunction(callback)) {
+              callback()
+            }
           } else {
             // Support in ajax websites web url change, web url can change dynamically, but locals never do
             this.initSupportWebURLChange()
