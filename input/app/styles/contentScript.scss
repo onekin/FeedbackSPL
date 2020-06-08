@@ -5,6 +5,10 @@
   z-index: 2147483646 !important;
 }
 
+.context-menu-list {
+  z-index: 2147483647 !important;
+}
+
 @import './groupSelection';
 @import './tagWrapper';
 @import './sidebar';
