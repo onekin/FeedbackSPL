@@ -1,5 +1,6 @@
 {
   "criteria": [
+    // PVSCL:IFCOND(Typo, LINE)
     {
       "name": "Typos",
       "group": "Presentation",
@@ -7,6 +8,7 @@
       "levels": [],
       "custom": true
     }
+    // PVSCL:ENDCOND
   ],
   "defaultLevels": [
     {
