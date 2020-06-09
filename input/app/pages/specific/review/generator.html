@@ -3,9 +3,16 @@
     <h4 class="tagHeaderName">Review&Go</h4>
   </div>
   <div id="reviewGeneratorBody" class="bodyContainer">
+    // PVSCL:IFCOND(BoilerPlateTemplate, LINE)
     <img id="reviewGeneratorButton" class="toolButton" alt="Generate review report" title="Generate review report" src=""/>
+    // PVSCL:ENDCOND
+    // PVSCL:IFCOND(Canvas, LINE)
     <img id="overviewButton" class="toolButton" alt="Generate canvas" title="Generate canvas" src=""/>
+    // PVSCL:ENDCOND
     <img id="importExportButton" class="toolButton" alt="Import and export" title="Import and export" src=""/>
+    // PVSCL:IFCOND(ResumptionFacility, LINE)
+    <img id="resumeButton" class="toolButton" alt="Resume review" title="Resume review" src=""/>
+    // PVSCL:ENDCOND
     <img id="deleteAnnotationsButton" class="toolButton" alt="Delete all annotations in document" title="Delete all annotations in document" src=""/>
     <img id="configurationButton" class="toolButton" alt="Configuration" title="Configuration" src=""/>
   </div>

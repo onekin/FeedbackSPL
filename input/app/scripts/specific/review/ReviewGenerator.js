@@ -4,7 +4,9 @@ const axios = require('axios')
 const _ = require('lodash')
 const Alerts = require('../../utils/Alerts')
 const LanguageUtils = require('../../utils/LanguageUtils')
+// PVSCL:IFCOND(BoilerPlateTemplate, LINE)
 const Screenshots = require('./Screenshots')
+// PVSCL:ENDCOND
 const AnnotationExporter = require('./AnnotationExporter')
 const AnnotationImporter = require('./AnnotationImporter')
 const ReviewSchema = require('../../model/schema/Review')
@@ -27,6 +29,7 @@ class ReviewGenerator {
     axios.get(generatorWrapperURL).then((response) => {
       document.querySelector('#abwaSidebarContainer').insertAdjacentHTML('afterbegin', response.data)
       this.container = document.querySelector('#reviewGenerator')
+      // PVSCL:IFCOND(BoilerPlateTemplate, LINE)
       // Set generator image and event
       let generatorImageURL = chrome.extension.getURL('/images/generator.png')
       this.generatorImage = this.container.querySelector('#reviewGeneratorButton')
@@ -34,6 +37,7 @@ class ReviewGenerator {
       this.generatorImage.addEventListener('click', () => {
         this.generateReviewButtonHandler()
       })
+      // PVSCL:ENDCOND
       // Set delete annotations image and event
       let deleteAnnotationsImageURL = chrome.extension.getURL('/images/deleteAnnotations.png')
       this.deleteAnnotationsImage = this.container.querySelector('#deleteAnnotationsButton')
@@ -41,6 +45,7 @@ class ReviewGenerator {
       this.deleteAnnotationsImage.addEventListener('click', () => {
         this.deleteAnnotations()
       })
+      // PVSCL:IFCOND(Canvas, LINE)
       // Set create canvas image and event
       let overviewImageURL = chrome.extension.getURL('/images/overview.png')
       this.overviewImage = this.container.querySelector('#overviewButton')
@@ -48,13 +53,16 @@ class ReviewGenerator {
       this.overviewImage.addEventListener('click', () => {
         this.generateCanvas()
       })
+      // PVSCL:ENDCOND
       // Set resume image and event
-      /* let resumeImageURL = chrome.extension.getURL('/images/resume.png')
+      // PVSCL:IFCOND(ResumptionFacility, LINE)
+      let resumeImageURL = chrome.extension.getURL('/images/resume.png')
       this.resumeImage = this.container.querySelector('#resumeButton')
       this.resumeImage.src = resumeImageURL
       this.resumeImage.addEventListener('click', () => {
         this.resume()
-      })*/
+      })
+      // PVSCL:ENDCOND
       // Set import export image and event
       let importExportImageURL = chrome.extension.getURL('/images/importExport.png')
       this.importExportImage = this.container.querySelector('#importExportButton')
@@ -74,6 +82,7 @@ class ReviewGenerator {
       }
     })
   }
+
   parseAnnotations (annotations){
     const criterionTag = Config.review.namespace + ':' + Config.review.tags.grouped.relation + ':'
     const levelTag = Config.review.namespace + ':' + Config.review.tags.grouped.subgroup + ':'
@@ -113,6 +122,7 @@ class ReviewGenerator {
     return r
   }
 
+  // PVSCL:IFCOND(BoilerPlateTemplate, LINE)
   generateReviewButtonHandler () {
     // Create context menu
     $.contextMenu({
@@ -136,6 +146,7 @@ class ReviewGenerator {
       }
     })
   }
+  // PVSCL:ENDCOND
 
   importExportButtonHandler () {
     // Create context menu
@@ -263,10 +274,13 @@ class ReviewGenerator {
     AnnotationExporter.exportCurrentDocumentAnnotations()
   }
 
+  // PVSCL:IFCOND(BoilerPlateTemplate, LINE)
   generateScreenshot () {
     Screenshots.takeScreenshot()
   }
+  // PVSCL:ENDCOND
 
+  // PVSCL:IFCOND(BoilerPlateTemplate, LINE)
   generateReview () {
     Alerts.loadingAlert({text: chrome.i18n.getMessage('GeneratingReviewReport')})
     let review = this.parseAnnotations(window.abwa.contentAnnotator.allAnnotations)
@@ -278,7 +292,9 @@ class ReviewGenerator {
     FileSaver.saveAs(blob, docTitle+'.txt')
     Alerts.closeAlert()
   }
+  // PVSCL:ENDCOND
 
+  // PVSCL:IFCOND(Canvas, LINE)
   generateCanvas () {
     window.abwa.sidebar.closeSidebar()
     Alerts.loadingAlert({text: chrome.i18n.getMessage('GeneratingReviewReport')})
@@ -441,6 +457,8 @@ class ReviewGenerator {
       Alerts.closeAlert()
     })
   }
+  // PVSCL:ENDCOND
+
   deleteAnnotations () {
     // Ask user if they are sure to delete it
     Alerts.confirmAlert({
@@ -461,9 +479,12 @@ class ReviewGenerator {
     })
 
   }
+
+  // PVSCL:IFCOND(ResumptionFacility, LINE)
   resume (){
     if(window.abwa.contentAnnotator.allAnnotations.length>0) window.abwa.contentAnnotator.goToAnnotation(window.abwa.contentAnnotator.allAnnotations.reduce((max,a) => new Date(a.updated) > new Date(max.updated) ? a : max))
   }
+  // PVSCL:ENDCOND
 
   destroy (callback) {
     // Remove toolbar
