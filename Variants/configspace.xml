@@ -28,7 +28,7 @@
 </cm:element>
 <cm:element cm:id="iYb5UcmC2Nbfb8iag" cm:name="iHhyYzCNAO4elPAEb" cm:type="ps:used" cm:class="ps:model"><cm:properties><cm:property cm:id="iZkMrYwY071nZqXEP" cm:type="ps:string" cm:name="model_type"><cm:constant cm:id="iNNQ03M_p_8ZcChKI" cm:type="ps:string">ps:fm</cm:constant>
 </cm:property>
-<cm:property cm:id="iviEpXjSQfBwEBXqS" cm:type="ps:path" cm:name="model_path"><cm:constant cm:id="iJhIudJSZ6--rc3E_" cm:type="ps:path">$(PROJECT)/ReviewAndGo.xfm</cm:constant>
+<cm:property cm:id="iviEpXjSQfBwEBXqS" cm:type="ps:path" cm:name="model_path"><cm:constant cm:id="iNXqJ1VsxSBTCkKcG" cm:type="ps:path">$(PROJECT)/ReviewTool.xfm</cm:constant>
 </cm:property>
 <cm:property cm:id="iKuGIdtKZatE7D68V" cm:type="ps:integer" cm:name="model_rank"><cm:constant cm:id="iOqADmXgUeMILi6qD" cm:type="ps:integer">1</cm:constant>
 </cm:property>
@@ -36,7 +36,7 @@
 </cm:element>
 <cm:element cm:id="ir7sEqqSnBoYy15mj" cm:name="i78aJRyhMBPJedryz" cm:type="ps:used" cm:class="ps:model"><cm:properties><cm:property cm:id="is3FQ2_rqxzOLqclW" cm:type="ps:string" cm:name="model_type"><cm:constant cm:id="iM4g0o6KQctRhSlP1" cm:type="ps:string">ps:ccfm</cm:constant>
 </cm:property>
-<cm:property cm:id="i0Y0s_ebca87DRJt_" cm:type="ps:path" cm:name="model_path"><cm:constant cm:id="iaqlRFsDlvZZoQ4SB" cm:type="ps:path">$(PROJECT)/ReviewAndGo.ccfm</cm:constant>
+<cm:property cm:id="i0Y0s_ebca87DRJt_" cm:type="ps:path" cm:name="model_path"><cm:constant cm:id="iXKMfZUTNugAxx_fR" cm:type="ps:path">$(PROJECT)/ReviewTool.ccfm</cm:constant>
 </cm:property>
 <cm:property cm:id="ivezkIkK_KBY0EZPH" cm:type="ps:integer" cm:name="model_rank"><cm:constant cm:id="i1i3bV6OO1xCDrAXt" cm:type="ps:integer">1</cm:constant>
 </cm:property>

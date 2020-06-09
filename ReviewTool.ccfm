@@ -5,7 +5,7 @@
         <cm:constant cm:id="i78aJRyhMBPJedryz_A_psversion_C" cm:type="ps:string">1.0</cm:constant>
       </cm:property>
       <cm:property cm:id="i78aJRyhMBPJedryz_A_psname" cm:type="ps:string" cm:invisible="true" cm:name="ps:name">
-        <cm:constant cm:id="i78aJRyhMBPJedryz_A_psname_C" cm:type="ps:string">ReviewAndGo</cm:constant>
+        <cm:constant cm:id="i78aJRyhMBPJedryz_A_psname_C" cm:type="ps:string">ReviewTool</cm:constant>
       </cm:property>
       <cm:property cm:id="i78aJRyhMBPJedryz_A_psauthor" cm:type="ps:string" cm:invisible="true" cm:name="ps:author">
         <cm:constant cm:id="i78aJRyhMBPJedryz_A_psauthor_C" cm:type="ps:string">haritz</cm:constant>
@@ -199,7 +199,7 @@
         <cm:mimedesc cm:id="iHBOZDihEvB6HwxNa" cm:mimetype="text/plain" cm:encoding="utf-8">messages</cm:mimedesc>
       </cm:vname>
     </cm:element>
-    <cm:element cm:id="iv0sQ-XVwGW-gQVMqOkZs2QEQ8Wc" cm:type="ps:file" cm:class="ps:source" cm:default="on">
+    <cm:element cm:id="iv0sQ-XVwGW-gQVMqOkZs2QEQ8Wc" cm:type="ps:pvscltext" cm:class="ps:source" cm:default="on">
       <cm:relations cm:id="iv0sQ-XVwGW-gQVMqOkZs2QEQ8Wcdependecies" cm:class="ps:dependencies">
       </cm:relations>
       <cm:relations cm:id="iVBgrSR7E6EbGcWkc09YCy27EM5dqcG6Eyg_pUBP6" cm:class="ps:parents">
@@ -213,6 +213,18 @@
         </cm:property>
         <cm:property cm:id="iDV0dLfTD7YYiqG_z5GNOf1Jnq6j" cm:type="ps:filetype" cm:fixed="true" cm:name="type">
           <cm:constant cm:id="iQRGkUaQBB_q_mx4wmpGfEk9qKvp" cm:type="ps:filetype">misc</cm:constant>
+        </cm:property>
+        <cm:property cm:id="iG1aq4eX6hnf1ckmr" cm:type="ps:string" cm:fixed="true" cm:readonly="true" cm:name="ps:Source">
+          <cm:constant cm:id="idAIpU-Vf9FOjEtKg" cm:type="ps:string">haritz</cm:constant>
+        </cm:property>
+        <cm:property cm:id="i5c6D3PqkqiwmY_zK" cm:type="ps:datetime" cm:fixed="true" cm:readonly="true" cm:name="ps:Created">
+          <cm:constant cm:id="if-OnJN0yD1kUVSGt" cm:type="ps:datetime">2020-06-09T13:59:59.132Z</cm:constant>
+        </cm:property>
+        <cm:property cm:id="ibOIisRnG2QBSx5zE" cm:type="ps:string" cm:fixed="true" cm:readonly="true" cm:name="ps:ChangedBy">
+          <cm:constant cm:id="iTyPlpQQNJhjFJY1n" cm:type="ps:string">haritz</cm:constant>
+        </cm:property>
+        <cm:property cm:id="i4MO6H8whARL7WC1Z" cm:type="ps:datetime" cm:fixed="true" cm:readonly="true" cm:name="ps:Changed">
+          <cm:constant cm:id="inBAA0bw6quMRk56z" cm:type="ps:datetime">2020-06-09T13:59:59.132Z</cm:constant>
         </cm:property>
       </cm:properties>
       <cm:vname>

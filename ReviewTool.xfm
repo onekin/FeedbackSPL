@@ -2,7 +2,7 @@
   <cm:head>
     <cm:properties>
       <cm:property cm:id="i1-tbYrIEVRCIlHIV" cm:type="ps:string" cm:invisible="true" cm:name="ps:name">
-        <cm:constant cm:id="iVpZjPOCQ1colbFUS" cm:type="ps:string">ReviewAndGo</cm:constant>
+        <cm:constant cm:id="iVpZjPOCQ1colbFUS" cm:type="ps:string">ReviewTool</cm:constant>
       </cm:property>
       <cm:property cm:id="ip7vAUyzKbWCus9ga" cm:type="ps:string" cm:invisible="true" cm:name="ps:author">
         <cm:constant cm:id="i45FU1J3fJpn08Mqp" cm:type="ps:string">haritz</cm:constant>
@@ -45,7 +45,10 @@
           <cm:constant cm:id="iyP53oWecG8fRJaeF" cm:type="ps:string">haritz</cm:constant>
         </cm:property>
         <cm:property cm:id="ikcEya1z8CW_YdHTI" cm:type="ps:datetime" cm:fixed="true" cm:readonly="true" cm:name="ps:Changed">
-          <cm:constant cm:id="ica_mlHblIPkCIixQ" cm:type="ps:datetime">2020-06-08T09:17:32.848Z</cm:constant>
+          <cm:constant cm:id="ica_mlHblIPkCIixQ" cm:type="ps:datetime">2020-06-09T13:44:34.560Z</cm:constant>
+        </cm:property>
+        <cm:property cm:id="i6DiRSdYs64C2BEPH" cm:type="ps:string" cm:name="name">
+          <cm:constant cm:id="iWyP732VzPQ_gzswT" cm:type="ps:string"></cm:constant>
         </cm:property>
       </cm:properties>
     </cm:element>
