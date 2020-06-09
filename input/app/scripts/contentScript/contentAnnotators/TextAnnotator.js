@@ -643,8 +643,11 @@ class TextAnnotator extends ContentAnnotator {
           // PVSCL:IFCOND(ReferenceFinder, LINE)
           let suggestedLiterature = Array.from($('#literatureList li span')).map((e) => { return $(e).attr('title') })
           // PVSCL:ENDCOND
+          // PVSCL:IFCOND(Gradations, LINE)
           let level = $('.poleRadio:checked') != null && $('.poleRadio:checked').length === 1 ? $('.poleRadio:checked')[0].value : null
+          // PVSCL:ENDCOND
           if (newComment !== null && newComment !== '') {
+            // PVSCL:IFCOND(SentimentAnalysis, LINE)
             $.ajax('http://text-processing.com/api/sentiment/', {
               method: 'POST',
               data: {text: newComment}
@@ -680,6 +683,14 @@ class TextAnnotator extends ContentAnnotator {
                 })
               }
             })
+            // PVSCL:ELSECOND
+            // Update annotation
+            updateAnnotation({
+              comment: newComment/* PVSCL:IFCOND(ReferenceFinder) */,
+              literature: suggestedLiterature/* PVSCL:ENDCOND *//* PVSCL:IFCOND(Gradations) */,
+              level: level /* PVSCL:ENDCOND */
+            })
+            // PVSCL:ENDCOND
           } else {
             // Update annotation
             updateAnnotation({
