@@ -1,7 +1,6 @@
 const Alerts = require('../../utils/Alerts')
 const LanguageUtils = require('../../utils/LanguageUtils')
 const Events = require('../../contentScript/Events')
-const TagManager = require('../../contentScript/TagManager')
 const Criteria = require('../../model/schema/Criteria')
 const Level = require('../../model/schema/Level')
 const Review = require('../../model/schema/Review')
