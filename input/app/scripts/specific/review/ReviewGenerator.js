@@ -54,8 +54,8 @@ class ReviewGenerator {
         this.generateCanvas()
       })
       // PVSCL:ENDCOND
-      // Set resume image and event
       // PVSCL:IFCOND(ResumptionFacility, LINE)
+      // Set resume image and event
       let resumeImageURL = chrome.extension.getURL('/images/resume.png')
       this.resumeImage = this.container.querySelector('#resumeButton')
       this.resumeImage.src = resumeImageURL
