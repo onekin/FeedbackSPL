@@ -35,6 +35,18 @@
   color:white;
   font-size:1.8em;
 }
+// PVSCL:IFCOND(FactorBasedCanvas, LINE)
+.clusterLabel[data-key="Strength"]{
+  background-image: linear-gradient(to top left, rgb(86, 203, 129), rgb(53, 154, 90));
+}
+.clusterLabel[data-key="Minor weakness"]{
+  background-image: linear-gradient(to top left, rgb(242, 203, 123), rgb(187, 148, 89));
+}
+.clusterLabel[data-key="Major weakness"]{
+  background-image: linear-gradient(to top left, rgb(235, 87, 92), rgb(174, 48, 48));
+}
+
+// PVSCL:ENDCOND
 .clusterLabel span{
   height:100%;
   writing-mode: tb-rl;
