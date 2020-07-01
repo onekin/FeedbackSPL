@@ -665,7 +665,13 @@ class ReviewGenerator {
           for(let j=0;j<criterionAnnotations.length;j++){
             let annotationElement = annotationTemplate.content.cloneNode(true)
             annotationElement.querySelector('.canvasAnnotation').style.width = annotationWidth+'%'
+            // PVSCL:IFCOND(FactorBasedCanvas, LINE)
+            if(criterionAnnotations[j].highlightText!=null) {
+              annotationElement.querySelector('.canvasAnnotation').innerHTML = criterionAnnotations[j].comment + '<hr/>' + criterionAnnotations[j].highlightText
+            }
+            // PVSCL:ELSECOND
             if(criterionAnnotations[j].highlightText!=null) annotationElement.querySelector('.canvasAnnotation').innerText = '"'+criterionAnnotations[j].highlightText+'"'
+            // PVSCL:ENDCOND
             if(criterionAnnotations[j].level!=null) annotationElement.querySelector('.canvasAnnotation').className += ' '+criterionAnnotations[j].level.replace(/\s/g,'')
             else annotationElement.querySelector('.canvasAnnotation').className += ' unsorted'
             annotationElement.querySelector('.canvasAnnotation').addEventListener('click',function(){
