@@ -220,14 +220,26 @@ class ReviewGenerator {
           let annotationsToCreate = criteria.map((factor) => {
             let criterionDescription = importedReview.model.criteria.find(criterion => criterion.name === factor.criterion)
             let yamlText = jsYaml.dump({description:criterionDescription.description || 'No description', group:factor.level, custom:false})
-            return {
+            let annotationsToCreateForCriteria = []
+            let categoryAnnotation = {
               uri: storageUri,
               tags: [Config.review.namespace+':'+Config.review.tags.grouped.group+':'+getCriterion(factor.criterion,reviewerName)],
               text: yamlText,
               permissions: annotationPermissions,
               group: selectedGroup
             }
+            annotationsToCreateForCriteria.push(categoryAnnotation)
+            // PVSCL:IFCOND(GradeFeedback, LINE)
+            let promoteAnnotation = _.clone(categoryAnnotation)
+            promoteAnnotation.tags = [Config.review.namespace+':'+Config.review.tags.grouped.relation+':'+getCriterion(factor.criterion,reviewerName), Config.review.namespace+':'+Config.review.tags.grouped.subgroup+':'+'Promote']
+            annotationsToCreateForCriteria.push(promoteAnnotation)
+            let discardAnnotation = _.clone(categoryAnnotation)
+            discardAnnotation.tags = [Config.review.namespace+':'+Config.review.tags.grouped.relation+':'+getCriterion(factor.criterion,reviewerName), Config.review.namespace+':'+Config.review.tags.grouped.subgroup+':'+'Discard']
+            annotationsToCreateForCriteria.push(discardAnnotation)
+            // PVSCL:ENDCOND
+            return annotationsToCreateForCriteria
           })
+          annotationsToCreate = _.flatten(annotationsToCreate) // As returned from map is an array of arrays
           window.abwa.storageManager.client.createNewAnnotations(annotationsToCreate,() => {
             resolve()
           })
