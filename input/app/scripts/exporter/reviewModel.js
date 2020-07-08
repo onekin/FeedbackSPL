@@ -1,8 +1,8 @@
 /* eslint-disable */
 
 class Review {
-  constructor(){
-    this._annotations = []
+  constructor(annotations = []){
+    this._annotations = annotations
   }
   insertAnnotation(annotation){
     this._annotations.push(annotation)

@@ -619,6 +619,16 @@ class TextAnnotator extends ContentAnnotator {
         poleChoiceRadio += '<input type="radio" name="pole" class="swal2-radio poleRadio" value="' + e + '" '
         if (hasLevel(annotation, e)) poleChoiceRadio += 'checked'
         poleChoiceRadio += '>'
+        // PVSCL:IFCOND(GradeFeedback, LINE)
+        switch (e) {
+          case 'Promote':
+            poleChoiceRadio += '<img class="poleImage" alt="Promote review comment" title="Promote review comment for metareview" width="20" src="' + chrome.extension.getURL('images/promote.png') + '"/>'
+            break
+          case 'Discard':
+            poleChoiceRadio += '<img class="poleImage" alt="Discard review comment" title="Discard review comment as biased or innapropriate" width="20" src="' + chrome.extension.getURL('images/discard.png') + '"/>'
+            break
+        }
+        // PVSCL:ELSECOND
         switch (e) {
           case 'Strength':
             poleChoiceRadio += '<img class="poleImage" alt="Strength" title="Mark as a strength" width="20" src="' + chrome.extension.getURL('images/strength.png') + '"/>'
@@ -630,6 +640,7 @@ class TextAnnotator extends ContentAnnotator {
             poleChoiceRadio += '<img class="poleImage" alt="Minor concern" title="Mark as a minor concern" width="20" src="' + chrome.extension.getURL('images/minorConcern.png') + '"/>'
             break
         }
+        // PVSCL:ENDCOND
         poleChoiceRadio += ' <span class="swal2-label" style="margin-right:5%;" title="\'+e+\'">' + e + '</span>'
       })
       poleChoiceRadio += '</div>'
