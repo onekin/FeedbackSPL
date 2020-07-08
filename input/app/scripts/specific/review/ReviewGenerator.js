@@ -16,7 +16,8 @@ const ImportSchema = require('./ImportSchema')
 const $ = require('jquery')
 require('jquery-contextmenu/dist/jquery.contextMenu')
 
-const {Review, Mark, MajorConcern, MinorConcern, Strength, Annotation} = require('../../exporter/reviewModel.js')
+const {Review, Mark, MajorConcern, MinorConcern, Strength, Annotation} = require('../../exporter/reviewModel')
+const MetaReview = require('../../exporter/metaReviewModel')
 
 const Config = require('../../Config')
 const FileSaver = require('file-saver')
@@ -92,8 +93,7 @@ class ReviewGenerator {
     const criterionTag = Config.review.namespace + ':' + Config.review.tags.grouped.relation + ':'
     const levelTag = Config.review.namespace + ':' + Config.review.tags.grouped.subgroup + ':'
 
-
-    let r = new Review()
+    let parsedAnnotations = []
 
     for (let a in annotations) {
       let criterion = null
@@ -122,9 +122,9 @@ class ReviewGenerator {
       let annotationText = annotations[a].text!==null&&annotations[a].text!=='' ? JSON.parse(annotations[a].text) : {comment:'',suggestedLiterature:[]}
       let comment = annotationText.comment !== null ? annotationText.comment : null
       let suggestedLiterature = annotationText.suggestedLiterature !== null ? annotationText.suggestedLiterature : []
-      r.insertAnnotation(new Annotation(annotations[a].id,criterion,level,group,highlightText,pageNumber,comment,suggestedLiterature))
+      parsedAnnotations.push(new Annotation(annotations[a].id,criterion,level,group,highlightText,pageNumber,comment,suggestedLiterature))
     }
-    return r
+    return parsedAnnotations
   }
 
   // PVSCL:IFCOND(BoilerPlateTemplate, LINE)
@@ -513,10 +513,12 @@ class ReviewGenerator {
   // PVSCL:IFCOND(BoilerPlateTemplate, LINE)
   generateReview () {
     Alerts.loadingAlert({text: chrome.i18n.getMessage('GeneratingReviewReport')})
+    let parsedAnnotations = this.parseAnnotations(window.abwa.contentAnnotator.allAnnotations)
+    let review
     // PVSCL:IFCOND(MetareviewTemplate, LINE)
-    // TODO
+    review = new MetaReview(parsedAnnotations)
     // PVSCL:ELSECOND
-    let review = this.parseAnnotations(window.abwa.contentAnnotator.allAnnotations)
+    review = new Review(parsedAnnotations)
     // PVSCL:ENDCOND
     let report = review.toString()
     let blob = new Blob([report], {type: 'text/plain;charset=utf-8'})
@@ -532,7 +534,8 @@ class ReviewGenerator {
   generateCanvas () {
     window.abwa.sidebar.closeSidebar()
     Alerts.loadingAlert({text: chrome.i18n.getMessage('GeneratingReviewReport')})
-    let review = this.parseAnnotations(window.abwa.contentAnnotator.allAnnotations)
+    let parsedAnnotations = this.parseAnnotations(window.abwa.contentAnnotator.allAnnotations)
+    let review = new Review(parsedAnnotations)
     let canvasPageURL = chrome.extension.getURL('pages/specific/review/reviewCanvas.html')
     axios.get(canvasPageURL).then((response) => {
       document.body.lastChild.insertAdjacentHTML('afterend', response.data)
